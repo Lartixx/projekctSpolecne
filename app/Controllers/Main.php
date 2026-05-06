@@ -17,10 +17,10 @@ class Main extends BaseController
 
     public function index()
     {
-        $data = $this->raceYearModel->where('sex', 'W')->orderBy('year', 'DESC')->first();
+        $data = $this->raceYearModel->where('sex', 'W')->orderBy('year', 'DESC')->findAll();
 
         return view ('index', [
-            'data' => $data
+            'data' => $data,
         ]);
     }
 }
