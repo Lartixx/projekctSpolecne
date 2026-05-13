@@ -17,10 +17,35 @@ class Main extends BaseController
 
     public function index()
     {
-        $data = $this->raceYearModel->where('sex', 'W')->orderBy('year', 'DESC')->findAll();
+    $years = $this->raceYearModel
+        ->select('year, COUNT(*) as race_count')
+        ->where('sex', 'W')
+        ->groupBy('year')
+        ->orderBy('year', 'DESC')
+        ->findAll();
 
-        return view ('index', [
-            'data' => $data,
-        ]);
+    return view('index', [
+        'years' => $years
+    ]);
+    }
+
+    public function rokDetail($year)
+    {
+    $data = $this->raceYearModel
+        ->where('sex', 'W')
+        ->where('year', $year)
+        ->orderBy('start_date', 'ASC')
+        ->findAll();
+
+    return view('rokDetail', [
+        'data' => $data,
+        'year' => $year
+    ]);
+    }
+
+    public function zavodDetail(){
+        
+        
+        return view('zavodDetail');
     }
 }

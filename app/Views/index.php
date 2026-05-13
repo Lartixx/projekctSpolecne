@@ -1,56 +1,69 @@
 <?=$this->extend("layout/template");?>
 <?=$this->section("content");?>
 
-<div>
-    <div class="text-center">
-        <h1>Seznam ženských závodů</h1>
-    </div>
-
-<?php  
-
-$table = new \CodeIgniter\View\Table();
-
-$table->setHeading('Název', 'Rok', 'Datum', 'Zjistit víc');
-
-foreach ($data as $row) {
-
-    if ($row->start_date == $row->end_date) {
-        $datum = $row->start_date;
-    } else {
-        $datum = $row->start_date . "-" . $row->end_date;
+<style>
+    .race-card {
+        transition: all 0.2s ease-in-out;
     }
 
-    $table->addRow($row->real_name, $row->year, $datum, $row->id);
-}
- 
-$template = array(
-    'table_open'=> '<table class="table table-bordered">',
-    'thead_open'=> '<thead>',
-    'thead_close'=> '</thead>',
-    'heading_row_start'=> '<tr>',
-    'heading_row_end'=>' </tr>',
-    'heading_cell_start'=> '<th>',
-    'heading_cell_end' => '</th>',
-    'tbody_open' => '<tbody>',
-    'tbody_close' => '</tbody>',
-    'row_start' => '<tr>',
-    'row_end'  => '</tr>',
-    'cell_start' => '<td>',
-    'cell_end' => '</td>',
-    'row_alt_start' => '<tr>',
-    'row_alt_end' => '</tr>',
-    'cell_alt_start' => '<td>',
-    'cell_alt_end' => '</td>',
-    'table_close' => '</table>'
-    );
-   
-$table->setTemplate($template);
-    // $page = $pager->getCurrentPage();
-    echo $table->generate();
-    // echo $pager->links();
+    .race-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>
 
- 
-?>
+<div class="container py-5">
+
+    <!-- Nadpis -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">
+            Ženské závody
+        </h1>
+
+        <p class="text-muted">
+            Přehled závodů podle jednotlivých roků
+        </p>
+    </div>
+
+    <div class="row">
+
+        <?php foreach ($years as $year): ?>
+
+            <div class="col-md-6 col-lg-4 mb-4">
+
+                <div class="card race-card border-0 shadow-lg h-100 rounded-4">
+
+                    <div class="card-body d-flex flex-column justify-content-center text-center p-5">
+
+                        <!-- Rok -->
+                        <h2 class="display-5 fw-bold mb-3">
+                            <?= $year->year ?>
+                        </h2>
+
+                        <!-- Počet závodů -->
+                        <p class="fs-5 text-muted mb-4">
+                            Počet závodů:
+                            <span class="fw-bold text-dark">
+                                <?= $year->race_count ?>
+                            </span>
+                        </p>
+
+                        <!-- Tlačítko -->
+                        <a href="<?= base_url('rokDetail/' . $year->year) ?>"
+                           class="btn btn-primary btn-lg rounded-pill px-4">
+                            Zobrazit závody
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        <?php endforeach; ?>
+
+    </div>
+
 </div>
 
 <?=$this->endSection();?>
