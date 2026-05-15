@@ -43,9 +43,15 @@ class Main extends BaseController
     ]);
     }
 
-    public function zavodDetail(){
-        
-        
-        return view('zavodDetail');
+    public function zavodDetail($id){
+        $zavody = $this->raceYearModel
+        ->select('race_year.*, stage.profile')
+        ->where('race_year.id', $id)
+        ->join('stage', 'stage.id_race_year=race_year.id')
+        ->first();
+
+        return view('zavodDetail', [
+            'zavody' => $zavody
+        ]);
     }
 }
