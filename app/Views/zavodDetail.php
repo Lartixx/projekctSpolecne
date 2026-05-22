@@ -23,6 +23,12 @@
         </p>
     </div>
 
+    <div class="mb-4">
+    <a href="<?= base_url('rokDetail/' . $zavody->year) ?>" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Zpět
+    </a>
+</div>
+
     <div class="row g-4">
         <!-- Logo -->
         <div class="col-lg-4">

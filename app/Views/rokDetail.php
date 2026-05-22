@@ -13,6 +13,23 @@
         </p>
     </div>
 
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <!-- Zpět -->
+    <a href="<?= base_url('/') ?>" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Zpět
+    </a>
+
+    <!-- Přidat -->
+    <a href="<?= base_url('zavody/create') ?>" class="btn btn-success">
+        <i class="fas fa-plus me-1"></i> Přidat závod
+    </a>
+
+    <!-- prázdné místo kvůli vycentrování -->
+    <div style="width: 90px;"></div>
+
+</div>
+
 <?php
 
 $table = new \CodeIgniter\View\Table();
@@ -46,22 +63,22 @@ foreach ($data as $row) {
         </a>
     ';
 
-    // Edit tlačítko
+ // Edit tlačítko
 $editButton = '
     <a href="' . base_url('zavody/edit/' . $row->id) . '" 
-       class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
+       class="btn btn-warning btn-sm"
        title="Upravit">
-        <i class="fa fa-pencil"></i>
+        <i class="fas fa-pencil-alt me-1"></i> Upravit
     </a>
 ';
 
 // Smazat tlačítko
 $deleteButton = '
     <a href="' . base_url('zavody/delete/' . $row->id) . '" 
-       class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+       class="btn btn-danger btn-sm"
        title="Smazat"
        onclick="return confirm(\'Opravdu chceš smazat tento záznam?\')">
-        <i class="fa fa-trash"></i>
+        <i class="fas fa-trash me-1"></i> Smazat
     </a>
 ';
 
