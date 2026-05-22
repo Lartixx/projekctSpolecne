@@ -5,14 +5,18 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\RaceYear;
+use Config\Strankovani;
 
 class Main extends BaseController
 {   
     protected RaceYear $raceYearModel;
+    protected Strankovani $paginationConfig;
 
     public function __construct()
     {
         $this->raceYearModel = new RaceYear();
+        $this->paginationConfig = new Strankovani();
+
     }
 
     public function index()
@@ -35,11 +39,12 @@ class Main extends BaseController
         ->where('sex', 'W')
         ->where('year', $year)
         ->orderBy('start_date', 'ASC')
-        ->findAll();
+        ->paginate($this->paginationConfig->pocetZavoduNaStranku);
 
     return view('rokDetail', [
         'data' => $data,
-        'year' => $year
+        'year' => $year,
+        'pager' => $this->raceYearModel->pager
     ]);
     }
 

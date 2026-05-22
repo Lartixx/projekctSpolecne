@@ -21,7 +21,8 @@ $table->setHeading(
     ['data' => 'Název', 'class' => 'text-center'],
     ['data' => 'Rok', 'class' => 'text-center'],
     ['data' => 'Datum', 'class' => 'text-center'],
-    ['data' => 'Zjistit víc', 'class' => 'text-center']
+    ['data' => 'Zjistit víc', 'class' => 'text-center'],
+    ['data' => 'Upravit', 'class' => 'text-center']
 );
 
 foreach ($data as $row) {
@@ -45,11 +46,39 @@ foreach ($data as $row) {
         </a>
     ';
 
+    // Edit tlačítko
+$editButton = '
+    <a href="' . base_url('zavody/edit/' . $row->id) . '" 
+       class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
+       title="Upravit">
+        <i class="fa fa-pencil"></i>
+    </a>
+';
+
+// Smazat tlačítko
+$deleteButton = '
+    <a href="' . base_url('zavody/delete/' . $row->id) . '" 
+       class="btn btn-sm btn-danger d-flex align-items-center justify-content-center"
+       title="Smazat"
+       onclick="return confirm(\'Opravdu chceš smazat tento záznam?\')">
+        <i class="fa fa-trash"></i>
+    </a>
+';
+
+// poslední sloupec (Upravit)
+$actionButtons = '
+    <div class="d-flex justify-content-center gap-2">
+        ' . $editButton . '
+        ' . $deleteButton . '
+    </div>
+';
+
     $table->addRow(
         $row->real_name,
         $row->year,
         $datum,
-        $detailButton
+        $detailButton,
+        $actionButtons
     );
 }
 
@@ -90,6 +119,10 @@ $table->setTemplate($template);
 echo $table->generate();
 
 ?>
+
+<div class="d-flex justify-content-center mt-4">
+    <?= $pager->links() ?>
+</div>
 
 </div>
 

@@ -31,8 +31,9 @@
                     <h4 class="mb-4">
                         Logo závodu
                     </h4>
+                    <hr class="border-2 border-secondary opacity-25 mb-4">
                     <img 
-                        src="<?= base_url('images/loga/' . $zavody->logo) ?>"
+                        src="<?= base_url('images/logos/' . $zavody->logo) ?>"
                         class="img-fluid rounded"
                         alt="Logo závodu">
                 </div>
@@ -46,8 +47,9 @@
                     <h4 class="mb-4 text-center">
                         Profil tratě
                     </h4>
+                    <hr class="border-2 border-secondary opacity-25 mb-4">
                     <img 
-                        src="<?= base_url('images/profiles/' . $zavody->profile) ?>"
+                        src="<?= base_url('images/stages/profiles/' . $zavody->profile) ?>"
                         class="img-fluid rounded w-100"
                         alt="Profil tratě">
                 </div>
