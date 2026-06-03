@@ -1,5 +1,18 @@
 <?= $this->extend("layout/template"); ?>
 <?= $this->section("content"); ?>
+<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+        <?= session()->getFlashdata('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show">
+        <?= session()->getFlashdata('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
 <div class="container py-5">
 
@@ -63,12 +76,17 @@
                                     <label class="form-label">Ročník</label>
 
                                     <input type="text"
-                                        name="year"
+                                       
                                         class="form-control"
                                         value="<?= $year ?>"
                                         disabled>
                                 </div>
 
+
+
+                                <input type="hidden"
+                                    name="year"
+                                    value="<?= $year ?>">
 
                                 <!-- Datum od -->
                                 <div class="col-md-6 mb-3">
@@ -202,11 +220,268 @@
 
         // Edit tlačítko
         $editButton = '
-    <a href="' . base_url('zavody/edit/' . $row->id) . '" 
-       class="btn btn-warning btn-sm"
-       title="Upravit">
-        <i class="fas fa-pencil-alt me-1"></i> Upravit
-    </a>
+
+<button type="button"
+    class="btn btn-warning btn-sm"
+    data-bs-toggle="modal"
+    data-bs-target="#editRaceModal' . $row->id . '">
+
+    <i class="fas fa-pencil-alt me-1"></i>
+    Upravit
+
+</button>
+
+<div class="modal fade"
+    id="editRaceModal' . $row->id . '"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <form action="' . base_url('zavody/update/' . $row->id) . '"
+                method="post"
+                enctype="multipart/form-data">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Upravit závod
+                    </h5>
+
+                    <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <!-- Název -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Název závodu
+                            </label>
+
+                            <input type="text"
+                                name="real_name"
+                                class="form-control"
+                                value="' . esc($row->real_name) . '"
+                                required>
+                        </div>
+
+                        <!-- Ročník -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Ročník
+                            </label>
+
+                            <input type="text"
+                                class="form-control"
+                                value="' . $row->year . '"
+                                disabled>
+                        </div>
+
+                        <!-- Datum začátku -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Datum začátku
+                            </label>
+
+                            <input type="date"
+                                name="start_date"
+                                class="form-control"
+                                value="' . $row->start_date . '"
+                                min="' . $row->year . '-01-01"
+                                max="' . $row->year . '-12-31"
+                                required>
+                        </div>
+
+                        <!-- Datum konce -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Datum konce
+                            </label>
+
+                            <input type="date"
+                                name="end_date"
+                                class="form-control"
+                                value="' . $row->end_date . '"
+                                min="' . $row->year . '-01-01"
+                                max="' . $row->year . '-12-31"
+                                required>
+                        </div>
+
+                        <!-- Stát -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Stát
+                            </label>
+
+                            <select name="country"
+                                class="form-select"
+                                required>';
+
+        foreach ($countries as $country) {
+
+            $selected = $row->country == $country['alpha2'] ? 'selected' : '';
+
+            $editButton .= '
+
+                                <option value="' . esc($country['alpha2']) . '" ' . $selected . '>
+                                    ' . esc($country['name']) . ' (' . esc($country['alpha2']) . ')
+                                </option>
+    ';
+        }
+
+        $editButton .= '
+
+                            </select>
+                        </div>
+
+                        <!-- Závod -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Závod
+                            </label>
+
+                            <select name="id_race"
+                                class="form-select"
+                                required>';
+
+        foreach ($races as $race) {
+
+            $selected = $row->id_race == $race->id ? 'selected' : '';
+
+            $editButton .= '
+
+                                <option value="' . $race->id . '" ' . $selected . '>
+                                    ' . esc($race->default_name) . ' (ID: ' . $race->id . ')
+                                </option>
+    ';
+        }
+
+        $editButton .= '
+
+                            </select>
+                        </div>
+
+                        <!-- Aktuální logo -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Aktuální logo
+                            </label>
+
+                            <div class="border rounded p-2 text-center bg-light">';
+
+        if (!empty($row->logo)) {
+
+            $editButton .= '
+
+                                    <img src="' . base_url('images/logos/' . $row->logo) . '"
+                                        class="img-fluid"
+                                        style="max-height: 120px;">
+                                ';
+        } else {
+
+            $editButton .= '
+
+                                    <span class="text-muted">
+                                        Žádné logo
+                                    </span>
+                                ';
+        }
+
+        $editButton .= '
+
+                            </div>
+                        </div>
+
+                        <!-- Nové logo -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Nové logo
+                            </label>
+
+                            <input type="file"
+                                name="logo"
+                                class="form-control"
+                                accept=".png,.jpg,.jpeg,.svg">
+                        </div>
+
+                        <!-- Aktuální mapa -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Aktuální mapa
+                            </label>
+
+                            <div class="border rounded p-2 text-center bg-light">';
+
+        if (!empty($row->map)) {
+
+            $editButton .= '
+
+                                    <img src="' . base_url('images/stages/profiles/' . $row->map) . '"
+                                        class="img-fluid"
+                                        style="max-height: 120px;">
+                                ';
+        } else {
+
+            $editButton .= '
+
+                                    <span class="text-muted">
+                                        Žádná mapa
+                                    </span>
+                                ';
+        }
+
+        $editButton .= '
+
+                            </div>
+                        </div>
+
+                        <!-- Nová mapa -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Nová mapa
+                            </label>
+
+                            <input type="file"
+                                name="map"
+                                class="form-control"
+                                accept=".png,.jpg,.jpeg,.webp,.svg">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Zavřít
+
+                    </button>
+
+                    <button type="submit"
+                        class="btn btn-warning">
+
+                        <i class="fas fa-save me-1"></i>
+                        Uložit změny
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
 ';
 
         // Smazat tlačítko
