@@ -9,3 +9,6 @@ $routes->get('/', 'Main::index');
 $routes->get('/rokDetail/(:num)', 'Main::rokDetail/$1');
 $routes->get('/zavodDetail/(:num)', 'Main::zavodDetail/$1');
 $routes->post('zavody/create', 'Main::create');
+$routes->get('zavody/delete/(:num)', 'Main::delete/$1');
+$routes->post('zavody/edit/', 'Main::edit');
+

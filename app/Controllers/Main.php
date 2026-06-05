@@ -122,4 +122,75 @@ class Main extends BaseController
         return redirect()->to('/rokDetail/' . $data['year'])
             ->with('success', 'Závod byl úspěšně vytvořen');
     }
+
+    public function delete($id)
+    {
+        $race = $this->raceYearModel->find($id);
+
+        if (!$race) {
+            return redirect()->back()
+                ->with('error', 'Závod nebyl nalezen');
+        }
+
+        $this->raceYearModel->delete($id);
+
+        return redirect()->to('/rokDetail/' . $race->year)
+            ->with('success', 'Závod byl úspěšně smazán');
+    }
+
+
+    public function edit()
+    {
+        $id = $this->request->getPost('id');
+
+        $race = $this->raceYearModel->where('id', $id)->first();
+        var_dump($race);
+
+        if (!$race) {
+            return redirect()->back()
+                ->with('error', 'Závod nebyl nalezen');
+        }
+
+        $logoName = $race->logo;
+
+        $logo = $this->request->getFile('logo');
+
+        if ($logo && $logo->isValid() && !$logo->hasMoved()) {
+
+            $uploadPath = 'images/logos/';
+            $name = 'logo-' . uniqid();
+
+            $uploadResult = $this->uploadFile($logo, $uploadPath, $name);
+
+            if (!$uploadResult['uploaded']) {
+                return redirect()->back()
+                    ->with('error', 'Chyba při nahrávání loga');
+            }
+
+            $logoName = $uploadResult['name'];
+        }
+
+        $data = [
+
+            'id' => $id,
+
+            'real_name' => $this->request->getPost('real_name'),
+
+            'id_race' => $this->request->getPost('id_race'),
+
+            'start_date' => $this->request->getPost('start_date'),
+
+            'end_date' => $this->request->getPost('end_date'),
+
+            'country' => $this->request->getPost('country'),
+
+            'logo' => $logoName,
+
+        ];
+
+        $this->raceYearModel->save($data);
+
+        return redirect()->to('/rokDetail/' . $race->year)
+            ->with('success', 'Závod byl úspěšně upraven');
+    }
 }
